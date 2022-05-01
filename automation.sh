@@ -36,3 +36,24 @@ mv *.tar /tmp
 
 aws s3 cp /tmp/${myname}-httpd-logs-${timestamp}.tar s3://${s3_bucket}/${myname}-httpd-logs-${timestamp}.tar
 
+File=/var/www/html/inventory.html
+if [ -f "$File" ];
+then
+	echo "$File exists"
+	echo "Appending to log file"
+	printf "$log_type\t\t$timestamp\t\t$file_type\t\t$(du -h /tmp/$myname-httpd-logs-$timestamp.tar | awk '{print $1}')\n" >> $File
+else
+	echo "Creating file inventory.html"
+	printf "Log Type\t\tTime Created\t\tType\t\tSize\n" >> /var/www/html/inventory.html
+	printf "$log_type\t\t$timestamp\t\t$file_type\t\t$(du -h /tmp/$myname-httpd-logs-$timestamp.tar | awk '{print $1}')\n" >> $File
+fi
+
+#CRON job
+
+if [ -n "$( cat /etc/cron.d/* | awk '/automation.sh/' )" ];
+then
+	echo "Cron job already available"
+else
+	printf "0 0 * * * root /root/Project/Automation_Project/automation.sh\n" > /etc/cron.d/automation
+        echo "Cron job created"
+fi
