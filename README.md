@@ -7,3 +7,5 @@ Below steps are performed in the automation script
 4. Enabling apache service so that apache restarts by itself when system reboots
 5. Creating tar files for apache service logs
 6. Uploading this tar files to S3 bucket
+7. Added cron job to automate script run
+8. Added book keeping to save all S3 bucket updates
